@@ -27,6 +27,11 @@ SHARED_LIB = $(SHARED_DIR)/libmath.so
 .PHONY: all
 all: static shared info
 
+# Clean all builds
+.PHONY: clean
+clean:
+	rm -rf $(BUILD_DIR)
+
 # Static library
 .PHONY: static
 static: $(STATIC_LIB)
@@ -53,49 +58,3 @@ info:
 	@echo "Object files: $(OBJS)"
 	@echo "Static library: $(STATIC_LIB)"
 	@echo "Shared library: $(SHARED_LIB)"
-
-# Test library
-.PHONY: test
-TEST_DIR = ./test
-TEST_BUILD = $(TEST_DIR)/build
-TEST_OBJ = $(TEST_BUILD)/obj
-TEST_BIN = $(TEST_BUILD)/bin
-TEST_PRE = $(TEST_BUILD)/preprocess
-TEST_ASM = $(TEST_BUILD)/asm
-TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
-TEST_PRE_FILES = $(patsubst $(TEST_DIR)/%.cpp,$(TEST_PRE)/%.i,$(TEST_SRCS))
-TEST_ASM_FILES = $(patsubst $(TEST_PRE)/%.i,$(TEST_ASM)/%.s,$(TEST_PRE_FILES))
-TEST_OBJS = $(patsubst $(TEST_ASM)/%.s,$(TEST_OBJ)/%.o,$(TEST_ASM_FILES))
-TEST_BIN_FILE = $(TEST_BIN)/main
-
-$(shell mkdir -p $(TEST_PRE) $(TEST_ASM) $(TEST_OBJ) $(TEST_BIN))
-
-# Test target
-test: $(TEST_BIN_FILE)
-	$(TEST_BIN_FILE)
-
-# Preprocess source files: (.cpp -> .i)
-$(TEST_PRE)/%.i: $(TEST_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -E $< -o $@
-
-# Generate assembly files: (.i -> .s)
-$(TEST_ASM)/%.s: $(TEST_PRE)/%.i
-	$(CXX) $(CXXFLAGS) -S $< -o $@
-
-# Compile assembly files to object files: (.s -> .o)
-$(TEST_OBJ)/%.o: $(TEST_ASM)/%.s
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# Link object files to binary: (.o -> binary)
-$(TEST_BIN_FILE): $(TEST_OBJS) $(STATIC_LIB)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-# Clean test build
-.PHONY: clean-test
-clean-test:
-	rm -rf $(TEST_BUILD)/obj $(TEST_BUILD)/bin
-
-# Clean all builds
-.PHONY: clean
-clean:
-	rm -rf $(BUILD_DIR) $(TEST_BUILD)
