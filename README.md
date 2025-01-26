@@ -19,7 +19,7 @@ This project contains a build system for compiling a static and shared math libr
 │   │   ├── preprocess  # Preprocessed source files (.i files)
 │   │   └── asm         # Assembly files (.s files)
 │   ├── Makefile        # Build system configuration for tests
-│   └── *.cpp           # Test source files
+│   └── main.cpp        # Test source files
 └── Makefile            # Build system configuration for the library
 ```
 
@@ -198,7 +198,7 @@ After building the project, the directory structure will look like this:
 │   │   ├── preprocess  # Preprocessed source files
 │   │   └── asm         # Assembly files
 │   ├── Makefile        # Test build system
-│   └── main.cpp           # Test source files
+│   └── main.cpp        # Test source files
 └── Makefile            # Main build system
 ```
 
