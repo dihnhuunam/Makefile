@@ -92,7 +92,7 @@ g++ -Wall -Wextra -I./include -fPIC -shared build/obj/math_utils.o -o build/shar
 Test source files (`.cpp`) are preprocessed into `.i` files:
 
 ```bash
-g++ -Wall -Wextra -I../include -E test/math_utils.cpp -o test/build/preprocess/math_utils.i
+g++ -Wall -Wextra -I../include -E test/main.cpp -o test/build/preprocess/main.i
 ```
 
 #### 2. Assembly
@@ -100,7 +100,7 @@ g++ -Wall -Wextra -I../include -E test/math_utils.cpp -o test/build/preprocess/m
 Preprocessed files (`.i`) are converted to assembly files (`.s`):
 
 ```bash
-g++ -Wall -Wextra -I../include -S test/build/preprocess/math_utils.i -o test/build/asm/math_utils.s
+g++ -Wall -Wextra -I../include -S test/build/preprocess/main.i -o test/build/asm/main.s
 ```
 
 #### 3. Object Files
@@ -108,7 +108,7 @@ g++ -Wall -Wextra -I../include -S test/build/preprocess/math_utils.i -o test/bui
 Assembly files (`.s`) are compiled into object files (`.o`):
 
 ```bash
-g++ -Wall -Wextra -I../include -c test/build/asm/math_utils.s -o test/build/obj/math_utils.o
+g++ -Wall -Wextra -I../include -c test/build/asm/main.s -o test/build/obj/main.o
 ```
 
 #### 4. Linking
@@ -116,7 +116,7 @@ g++ -Wall -Wextra -I../include -c test/build/asm/math_utils.s -o test/build/obj/
 Object files (`.o`) and any static libraries are linked into an executable:
 
 ```bash
-g++ -Wall -Wextra test/build/obj/math_utils.o ../build/static/libmath.a -o test/build/bin/main
+g++ -Wall -Wextra test/build/obj/main.o ../build/static/libmath.a -o test/build/bin/main
 ```
 
 #### 5. Execution
