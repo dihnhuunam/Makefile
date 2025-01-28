@@ -10,8 +10,8 @@ STATIC_DIR = $(BUILD_DIR)/static
 SHARED_DIR = $(BUILD_DIR)/shared
 
 # Static and shared libraries
-STATIC_LIBS = ${wildcard ${STATIC_DIR}/*.a}
-SHARED_LIBS = ${wildcard ${SHARED_DIR}/*.o}
+STATIC_LIBS = $(wildcard $(STATIC_DIR)/*.a)
+SHARED_LIBS = $(wildcard $(SHARED_DIR)/*.o)
 
 # Test library
 TEST_DIR = .
@@ -21,39 +21,52 @@ TEST_BIN = $(TEST_BUILD)/bin
 TEST_PRE = $(TEST_BUILD)/preprocess
 TEST_ASM = $(TEST_BUILD)/asm
 
-# Compilation C/C++ files 
+# Source, preprocess, assembly, object, and binary files
 TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
-TEST_PRE_FILES = $(patsubst $(TEST_DIR)/%.cpp,$(TEST_PRE)/%.i,$(TEST_SRCS))
-TEST_ASM_FILES = $(patsubst $(TEST_PRE)/%.i,$(TEST_ASM)/%.s,$(TEST_PRE_FILES))
-TEST_OBJS = $(patsubst $(TEST_ASM)/%.s,$(TEST_OBJ)/%.o,$(TEST_ASM_FILES))
+TEST_PRE_FILES = $(patsubst $(TEST_DIR)/%.cpp, $(TEST_PRE)/%.i, $(TEST_SRCS))
+TEST_ASM_FILES = $(patsubst $(TEST_PRE)/%.i, $(TEST_ASM)/%.s, $(TEST_PRE_FILES))
+TEST_OBJS = $(patsubst $(TEST_ASM)/%.s, $(TEST_OBJ)/%.o, $(TEST_ASM_FILES))
 TEST_BIN_FILE = $(TEST_BIN)/main
 
+# Create necessary directories
 $(shell mkdir -p $(TEST_PRE) $(TEST_ASM) $(TEST_OBJ) $(TEST_BIN))
 
-.PRECIOUS: $(TEST_PRE)/%.i $(TEST_ASM)/%.s
+.PRECIOUS: $(TEST_PRE)/%.i $(TEST_ASM)/%.s $(TEST_OBJ)/%.o
 
-# Test
-.PHONY: test
-test: $(TEST_BIN_FILE)
+# Test target
+.PHONY: test build clean build1 build2 build3 build4
+all: test
+
+test: build
 	$(TEST_BIN_FILE)
 
-# Preprocess source files: (.cpp -> .i)
+# Build all stages
+build: build4
+
+# Stage 1: Preprocess source files (.cpp -> .i)
+build1: $(TEST_PRE_FILES)
+
 $(TEST_PRE)/%.i: $(TEST_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -E $< -o $@
 
-# Generate assembly files: (.i -> .s)
+# Stage 2: Generate assembly files (.i -> .s)
+build2: $(TEST_ASM_FILES)
+
 $(TEST_ASM)/%.s: $(TEST_PRE)/%.i
 	$(CXX) $(CXXFLAGS) -S $< -o $@
 
-# Compile assembly files to object files: (.s -> .o)
+# Stage 3: Compile assembly files to object files (.s -> .o)
+build3: $(TEST_OBJS)
+
 $(TEST_OBJ)/%.o: $(TEST_ASM)/%.s
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Link object files to binary: (.o -> binary)
+# Stage 4: Link object files to binary (.o -> binary)
+build4: $(TEST_BIN_FILE)
+
 $(TEST_BIN_FILE): $(TEST_OBJS) $(STATIC_LIBS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Clean test build
-.PHONY: clean
+# Clean build directories
 clean:
 	rm -rf $(TEST_BUILD)
