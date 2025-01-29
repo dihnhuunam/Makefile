@@ -86,7 +86,4 @@ cd test && make run
 - Ensure that the `include/` directory contains all necessary header files.
 - The generated libraries are stored in `build/static/` and `build/shared/`.
 
-## 6. License
-
-This project is licensed under the MIT License.
 
