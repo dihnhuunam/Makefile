@@ -1,72 +1,81 @@
-# Compiler and flags
-CXX = g++
-CXXFLAGS = -Wall -Wextra -I$(INCLUDE_DIR)
+# 1. Compiler and Flags
+CXX := g++
+CXXFLAGS := -Wall -Wextra
 
-# Directories
-INCLUDE_DIR = ../include
-BUILD_DIR = ../build
-OBJ_DIR = $(BUILD_DIR)/obj
-STATIC_DIR = $(BUILD_DIR)/static
-SHARED_DIR = $(BUILD_DIR)/shared
+# 2. Directories and Files
+# Base project and library directories
+PRO_DIR := .
+LIB_DIR := ..
 
-# Static and shared libraries
-STATIC_LIBS = $(wildcard $(STATIC_DIR)/*.a)
-SHARED_LIBS = $(wildcard $(SHARED_DIR)/*.o)
+# Library directories and files
+LIB_STATIC := $(LIB_DIR)/build/static
+LIB_SHARED := $(LIB_DIR)/build/shared
+STATIC_FILES := $(wildcard $(LIB_STATIC)/*.a)
+SHARED_FILES := $(wildcard $(LIB_SHARED)/*.so)
 
-# Test library
-TEST_DIR = .
-TEST_BUILD = $(TEST_DIR)/build
-TEST_OBJ = $(TEST_BUILD)/obj
-TEST_BIN = $(TEST_BUILD)/bin
-TEST_PRE = $(TEST_BUILD)/preprocess
-TEST_ASM = $(TEST_BUILD)/asm
+# Source and include directories
+SOURCE_DIRS := $(PRO_DIR)/source
+INCLUDE_DIRS := $(PRO_DIR)/include $(LIB_DIR)/include
 
-# Source, preprocess, assembly, object, and binary files
-TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp)
-TEST_PRE_FILES = $(patsubst $(TEST_DIR)/%.cpp, $(TEST_PRE)/%.i, $(TEST_SRCS))
-TEST_ASM_FILES = $(patsubst $(TEST_PRE)/%.i, $(TEST_ASM)/%.s, $(TEST_PRE_FILES))
-TEST_OBJS = $(patsubst $(TEST_ASM)/%.s, $(TEST_OBJ)/%.o, $(TEST_ASM_FILES))
-TEST_BIN_FILE = $(TEST_BIN)/main
+# Build directories for object and binary files
+BUILD_DIR := $(PRO_DIR)/build
+OBJ_DIR := $(BUILD_DIR)/obj
+BIN_DIR := $(BUILD_DIR)/run
 
-# Create necessary directories
-$(shell mkdir -p $(TEST_PRE) $(TEST_ASM) $(TEST_OBJ) $(TEST_BIN))
+# Executable target
+TARGET := $(BIN_DIR)/test
 
-.PRECIOUS: $(TEST_PRE)/%.i $(TEST_ASM)/%.s $(TEST_OBJ)/%.o
+# 3. File Identification
+# Use vpath to specify locations of source and header files
+vpath %.h $(INCLUDE_DIRS)
+vpath %.cpp $(SOURCE_DIRS)
 
-# Test target
-.PHONY: test build clean build1 build2 build3 build4
-all: test
+# Identify header files and source files
+INCLUDE_FILES := $(foreach INCLUDE_DIR, $(INCLUDE_DIRS), $(wildcard $(INCLUDE_DIR)/*.h))
+SOURCE_FILES := $(foreach SOURCE_DIR, $(SOURCE_DIRS), $(wildcard $(SOURCE_DIR)/*.cpp))
 
-test: build
-	$(TEST_BIN_FILE)
+# Generate object files corresponding to source files
+OBJ_FILES := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(notdir $(SOURCE_FILES)))
 
-# Build all stages
-build: build4
+# 4. Flags for Compilation
+# Add include directories to CXXFLAGS
+CXXFLAGS += $(foreach INCLUDE_DIR, $(INCLUDE_DIRS), -I$(INCLUDE_DIR))
 
-# Stage 1: Preprocess source files (.cpp -> .i)
-build1: $(TEST_PRE_FILES)
+# 5. Targets
+# The default target (entry point)
+all: build
 
-$(TEST_PRE)/%.i: $(TEST_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -E $< -o $@
+# Build the executable from object files and static libraries
+.PHONY: build
+build: $(TARGET)
 
-# Stage 2: Generate assembly files (.i -> .s)
-build2: $(TEST_ASM_FILES)
-
-$(TEST_ASM)/%.s: $(TEST_PRE)/%.i
-	$(CXX) $(CXXFLAGS) -S $< -o $@
-
-# Stage 3: Compile assembly files to object files (.s -> .o)
-build3: $(TEST_OBJS)
-
-$(TEST_OBJ)/%.o: $(TEST_ASM)/%.s
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# Stage 4: Link object files to binary (.o -> binary)
-build4: $(TEST_BIN_FILE)
-
-$(TEST_BIN_FILE): $(TEST_OBJS) $(STATIC_LIBS)
+$(TARGET): $(OBJ_FILES) $(STATIC_FILES)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Clean build directories
-clean:
-	rm -rf $(TEST_BUILD)
+# Compile source files into object files
+$(OBJ_DIR)/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
+
+# 6. Additional Commands
+# Run the program after building
+.PHONY: run
+run: build
+	$(TARGET)
+
+# Display useful information about the build
+.PHONY: log
+log:
+	@echo "Include files: $(INCLUDE_FILES)" 
+	@echo "Source files: $(SOURCE_FILES)"
+	@echo "Object files: $(OBJ_FILES)"
+	@echo "CXX: $(CXX)"
+	@echo "CXXFLAGS: $(CXXFLAGS)"
+
+# Clean up the build directory
+.PHONY: clean
+clean: 
+	rm -rf $(BUILD_DIR)
+
+# 7. Create necessary directories
+# Create the necessary build directories (objects and binaries)
+$(shell mkdir -p $(OBJ_DIR) $(BIN_DIR))
