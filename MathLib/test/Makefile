@@ -2,40 +2,42 @@
 CXX := g++
 CXXFLAGS := -Wall -Wextra
 
-# 2. Directories and Files
-# Base project and library directories
-PRO_DIR := .
+# 2. Library directories and files
 LIB_DIR := ..
 
-# Library directories and files
-LIB_STATIC := $(LIB_DIR)/build/static
-LIB_SHARED := $(LIB_DIR)/build/shared
-STATIC_FILES := $(wildcard $(LIB_STATIC)/*.a)
-SHARED_FILES := $(wildcard $(LIB_SHARED)/*.so)
+# Static library
+STATIC_DIR := $(LIB_DIR)/build/static
+STATIC_FILES := $(wildcard $(STATIC_DIR)/*.a)
 
-# Source and include directories
-SOURCE_DIRS := $(PRO_DIR)/source
+# Shared library
+SHARED_DIR := $(LIB_DIR)/build/shared
+SHARED_FILES := $(wildcard $(SHARED_DIR)/*.so)
+
+# 3. Base directories and files
+PRO_DIR := .
+
+# Include directories and files
 INCLUDE_DIRS := $(PRO_DIR)/include $(LIB_DIR)/include
+INCLUDE_FILES := $(foreach INCLUDE_DIR, $(INCLUDE_DIRS), $(wildcard $(INCLUDE_DIR)/*.h))
 
-# Build directories for object and binary files
-BUILD_DIR := $(PRO_DIR)/build
-OBJ_DIR := $(BUILD_DIR)/obj
-BIN_DIR := $(BUILD_DIR)/run
+# Source directories and files
+SOURCE_DIRS := $(PRO_DIR)/source
+SOURCE_FILES := $(foreach SOURCE_DIR, $(SOURCE_DIRS), $(wildcard $(SOURCE_DIR)/*.cpp))
 
-# Executable target
-TARGET := $(BIN_DIR)/test
-
-# 3. File Identification
 # Use vpath to specify locations of source and header files
 vpath %.h $(INCLUDE_DIRS)
 vpath %.cpp $(SOURCE_DIRS)
 
-# Identify header files and source files
-INCLUDE_FILES := $(foreach INCLUDE_DIR, $(INCLUDE_DIRS), $(wildcard $(INCLUDE_DIR)/*.h))
-SOURCE_FILES := $(foreach SOURCE_DIR, $(SOURCE_DIRS), $(wildcard $(SOURCE_DIR)/*.cpp))
+# Build directories for object and binary files
+BUILD_DIR := $(PRO_DIR)/build
 
-# Generate object files corresponding to source files
+# Object directory and files
+OBJ_DIR := $(BUILD_DIR)/obj
 OBJ_FILES := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(notdir $(SOURCE_FILES)))
+
+# Binary directory and execatable file
+BIN_DIR := $(BUILD_DIR)/run
+TARGET := $(BIN_DIR)/test
 
 # 4. Flags for Compilation
 # Add include directories to CXXFLAGS
@@ -49,7 +51,7 @@ all: build
 .PHONY: build
 build: $(TARGET)
 
-$(TARGET): $(OBJ_FILES) $(STATIC_FILES)
+$(TARGET): $(OBJ_FILES) $(STATIC_FILES) 
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Compile source files into object files
