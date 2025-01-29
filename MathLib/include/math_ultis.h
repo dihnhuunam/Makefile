@@ -1,7 +1,6 @@
 #ifndef MATH_ULTIS_H
 #define MATH_ULTIS_H
 
-#include <iostream>
 using namespace std;
 
 class MathUltis
