@@ -1,213 +1,92 @@
-# Build System for Math Library and Test Framework
+# Project Build System
 
-This project contains a build system for compiling a static and shared math library, along with a test framework to verify functionality. The Makefile provided automates the compilation, archiving, organization, and testing processes.
+This project uses a Makefile to compile C++ source files into both static and shared libraries. The build system automatically organizes source files, include files, and build artifacts into structured directories.
 
-## Directory Structure
+## 1. Directory Structure
 
 ```
-.
-├── include             # Header files directory
-├── source              # Source files directory
-├── build               # Build directory
-│   ├── obj             # Object files for the main library
-│   ├── static          # Static library (.a files)
-│   └── shared          # Shared library (.so files)
-├── test                # Test directory
-│   ├── build           # Test build directory
-│   │   ├── obj         # Compiled object files
-│   │   ├── bin         # Final test executable
-│   │   ├── preprocess  # Preprocessed source files (.i files)
-│   │   └── asm         # Assembly files (.s files)
-│   ├── Makefile        # Build system configuration for tests
-│   └── main.cpp        # Test source files
-└── Makefile            # Build system configuration for the library
+MathLib/
+│── include/                # Header files (*.h)
+│── source/                 # Source files (*.cpp)
+│── build/                  # Build output directory
+│   ├── obj/                # Compiled object files (*.o)
+│   ├── static/             # Static library (*.a)
+│   ├── shared/             # Shared library (*.so)
+│── test/                   # Test directory
+│   ├── build/              # Test build directory
+│   │   ├── obj/            # Compiled object files
+│   │   ├── bin/            # Final test executable
+│   │   ├── preprocess/     # Preprocessed source files (.i files)
+│   │   ├── asm/            # Assembly files (.s files)
+│   ├── Makefile            # Build system configuration for tests
+│   ├── main.cpp            # Test source files
+│── Makefile                # Build system configuration for the library
 ```
 
-## Build Targets
+## 2. Build Targets
 
-### Library Makefile Targets
+The Makefile defines several targets for compiling and cleaning the project:
 
-#### `all`
+- **`all`**: Builds both static and shared libraries.
+- **`static`**: Compiles the static library (`libmath.a`).
+- **`shared`**: Compiles the shared library (`libmath.so`).
+- **`clean`**: Removes all compiled files and build directories.
+- **`log`**: Displays information about the source files, object files, and generated libraries.
 
-Builds both the static and shared libraries and displays additional build information.
+### Test Build System
 
-#### `static`
+A separate Makefile is included in the `test/` directory for building and running test executables:
 
-Compiles the object files and archives them into a static library (`libmath.a`).
+- **`build`**: Builds the test executable.
+- **`run`**: Runs the test executable.
+- **`clean`**: Removes test build artifacts.
+- **`log`**: Displays test build information.
 
-#### `shared`
+## 3. Compilation Flags
 
-Compiles the object files and links them into a shared library (`libmath.so`).
+- `-Wall -Wextra`: Enables compiler warnings for better code quality.
+- `-fPIC`: Generates position-independent code for shared libraries.
+- `-Iinclude/`: Adds the `include/` directory to the compiler's search path.
 
-#### `clean`
+## 4. Usage
 
-Removes all generated files and directories under the `build/` directory.
-
-#### `info`
-
-Displays information about the source files, object files, and generated libraries.
-
-### Test Makefile Targets
-
-#### `test`
-
-Compiles, links, and runs the test executable.
-
-#### `clean`
-
-Cleans the test build directory by removing all generated files.
-
-## Build Process
-
-### Library Build Process
-
-#### 1. Compile Object Files
-
-Source files (`.cpp`) in `source/` are compiled into object files in `build/obj/`:
-
-```bash
-g++ -Wall -Wextra -I./include -fPIC -c source/math_utils.cpp -o build/obj/math_utils.o
-```
-
-#### 2. Create Static Library
-
-Object files are archived into `libmath.a` in the `build/static` directory using `ar`:
-
-```bash
-ar rcs build/static/libmath.a build/obj/math_utils.o
-```
-
-#### 3. Create Shared Library
-
-Object files are linked into `libmath.so` in the `build/shared` directory:
-
-```bash
-g++ -Wall -Wextra -I./include -fPIC -shared build/obj/math_utils.o -o build/shared/libmath.so
-```
-
-### Test Build Process
-
-#### 1. Preprocessing
-
-Test source files (`.cpp`) are preprocessed into `.i` files:
-
-```bash
-g++ -Wall -Wextra -I../include -E test/main.cpp -o test/build/preprocess/main.i
-```
-
-#### 2. Assembly
-
-Preprocessed files (`.i`) are converted to assembly files (`.s`):
-
-```bash
-g++ -Wall -Wextra -I../include -S test/build/preprocess/main.i -o test/build/asm/main.s
-```
-
-#### 3. Object Files
-
-Assembly files (`.s`) are compiled into object files (`.o`):
-
-```bash
-g++ -Wall -Wextra -I../include -c test/build/asm/main.s -o test/build/obj/main.o
-```
-
-#### 4. Linking
-
-Object files (`.o`) and any static libraries are linked into an executable:
-
-```bash
-g++ -Wall -Wextra test/build/obj/main.o ../build/static/libmath.a -o test/build/bin/main
-```
-
-#### 5. Execution
-
-The resulting binary is executed when the `test` target is invoked.
-
-## Usage
-
-### Library Usage
-
-#### Build All
-
-Run the following command to build both the static and shared libraries:
-
-```bash
+To build the project, run:
+```sh
 make
 ```
 
-#### Build Static Library Only
-
-```bash
+To build only the static library:
+```sh
 make static
 ```
 
-#### Build Shared Library Only
-
-```bash
+To build only the shared library:
+```sh
 make shared
 ```
 
-#### Clean Build Artifacts
-
-```bash
+To clean all build artifacts:
+```sh
 make clean
 ```
 
-#### Display Build Information
-
-```bash
-make info
+To log the build details:
+```sh
+make log
 ```
 
-### Test Usage
-
-#### Run Tests
-
-To build and execute the tests:
-
-```bash
-make test
+To build and run tests:
+```sh
+cd test && make run
 ```
 
-#### Clean Test Build Artifacts
+## 5. Notes
 
-To clean up all generated files:
+- The Makefile automatically detects all `.cpp` files in `source/` and `.h` files in `include/`.
+- Ensure that the `include/` directory contains all necessary header files.
+- The generated libraries are stored in `build/static/` and `build/shared/`.
 
-```bash
-make clean
-```
+## 6. License
 
-## Example Output
+This project is licensed under the MIT License.
 
-After building the project, the directory structure will look like this:
-
-```
-.
-├── include             # Header files
-├── source              # Source files
-├── build               # Build directory
-│   ├── obj             # Object files
-│   ├── static          # Static library
-│   │   └── libmath.a
-│   └── shared          # Shared library
-│       └── libmath.so
-├── test                # Test directory
-│   ├── build           # Test build directory
-│   │   ├── obj         # Compiled object files
-│   │   ├── bin         # Final test executable
-│   │   ├── preprocess  # Preprocessed source files
-│   │   └── asm         # Assembly files
-│   ├── Makefile        # Test build system
-│   └── main.cpp        # Test source files
-└── Makefile            # Main build system
-```
-
-## Notes
-
-- Ensure all `.cpp` and `.h` files are correctly placed in the `source/` and `include/` directories, respectively.
-- Test source files (`*.cpp`) must be located in the `test/` directory.
-- Static libraries (`*.a`) and shared libraries (`*.o`) should be present in `build/static/` and `build/shared/` respectively.
-
-## License
-
-This project is open-source and can be used, modified, and distributed freely.
