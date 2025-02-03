@@ -1,17 +1,10 @@
 CXX := g++
+CXXFLAGS += -Wall -Wextra -I./includes
 
 PRO_DIR := .
 
-INCLUDE_DIR := $(PRO_DIR)/includes
-INCLUDE_FILES := $(wildcard $(INCLUDE_DIR)/*.h)
-
-CXXFLAGS += -I$(INCLUDE_DIR) 
-
 SOURCE_DIR := $(PRO_DIR)/sources
 SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.cpp)
-
-vpath %.h $(INCLUDE_DIR)
-vpath %.cpp $(SOURCE_DIR)
 
 BUILD_DIR := $(PRO_DIR)/build
 PROGRAM := $(BUILD_DIR)/main
@@ -48,8 +41,6 @@ $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 
 log:
 	@echo "------------------------------------INFO------------------------------------"
-	@echo "Include directory: $(INCLUDE_DIR)"
-	@echo "Include files: $(INCLUDE_FILES)"
 	@echo "Source directory: $(SOURCE_DIR)"
 	@echo "Source files: $(SOURCE_FILES)"
 	@echo "Object directory: $(OBJ_DIR)"
@@ -61,7 +52,8 @@ log:
 	@echo "Executable: $(BUILD_DIR)/main"
 	@echo "CXX: $(CXX)"
 	@echo "CXXFLAGS: $(CXXFLAGS)"
-	@echo "LDFLAGS: $(LDFLAGS)"
+	@echo "SHARED_FLAGS: $(SHARED_FLAGS)"
+	@echo "STATIC_FLAGS: $(STATIC_FLAGS)"
 .PHONY: log
 
 clean:

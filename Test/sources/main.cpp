@@ -6,10 +6,10 @@ using namespace std;
 
 int main()
 {
-    Calculate *test;
-    cout << test->add(10, 20) << endl;
+    Calculate test;
+    cout << test.add(10, 20) << endl;
 
-    Display *demo;
-    demo->show("Dinh Huu Nam");
+    Display demo;
+    demo.show("Dinh Huu Nam");
     return 0;
 }
