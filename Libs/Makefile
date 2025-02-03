@@ -41,7 +41,6 @@ $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 
 log:
 	@echo "------INFO------"
-	@echo "Include directory: $(INCLUDE_DIR)"
 	@echo "Source directory: $(SOURCE_DIR)"
 	@echo "Source files: $(SOURCE_FILES)"
 	@echo "Object directory: $(OBJ_DIR)"
