@@ -6,7 +6,8 @@ ARFLAGS := rcs
 PRO_DIR := .
 
 INCLUDE_DIR := $(PRO_DIR)/includes
-INCLUDE_FILES := $(wildcard $(INCLUDE_DIR)/*.h)
+
+CXXFLAGS += -I$(INCLUDE_DIR)
 
 SOURCE_DIR := $(PRO_DIR)/sources
 SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.cpp)
@@ -19,31 +20,35 @@ OBJ_DIR := $(BUILD_DIR)/obj
 OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
 SHARED_DIR := $(BUILD_DIR)/shared
-STATIC_DIR := $(BUILD_DIR)/static
 SHARED_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(SHARED_DIR)/lib%.so, $(SOURCE_FILES))
+STATIC_DIR := $(BUILD_DIR)/static
 STATIC_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(STATIC_DIR)/lib%.a, $(SOURCE_FILES))
 
-CXXFLAGS += -I$(INCLUDE_DIR)
-
 all: shared static
-.PHONY: shared clean log
+.PHONY : all
 
 shared: $(SHARED_FILES)
 $(SHARED_DIR)/lib%.so: $(OBJ_DIR)/%.o
+	mkdir -p $(SHARED_DIR)
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
+.PHONY: shared 
 
 static: $(STATIC_FILES)
 $(STATIC_DIR)/lib%.a: $(OBJ_DIR)/%.o
+	mkdir -p $(STATIC_DIR)
 	$(AR) $(ARFLAGS) $@ $^ 
+.PHONY: static
 
+build: $(OBJ_FILES)
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 .SECONDARY: $(OBJ_FILES)
+.PHONY: build
 
 log:
 	@echo "------INFO------"
 	@echo "Include directory: $(INCLUDE_DIR)"
-	@echo "Include files: $(INCLUDE_FILES)"
 	@echo "Source directory: $(SOURCE_DIR)"
 	@echo "Source files: $(SOURCE_FILES)"
 	@echo "Object directory: $(OBJ_DIR)"
@@ -56,5 +61,4 @@ log:
 
 clean:
 	rm -rf $(BUILD_DIR)
-
-$(shell mkdir -p $(OBJ_DIR) $(SHARED_DIR) $(STATIC_DIR))
+.PHONY: clean
