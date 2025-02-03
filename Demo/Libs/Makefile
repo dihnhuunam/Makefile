@@ -25,7 +25,7 @@ STATIC_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(STATIC_DIR)/lib%.a, $(SOURCE_F
 
 CXXFLAGS += -I$(INCLUDE_DIR)
 
-all: shared
+all: shared static
 .PHONY: shared clean log
 
 shared: $(SHARED_FILES)
