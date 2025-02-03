@@ -50,17 +50,17 @@ clean:
 
 # 6. Build Static Library
 .PHONY: static
-static: $(STATIC_DIR)/mylib.a
+static: $(STATIC_DIR)/liball.a
 
-$(STATIC_DIR)/mylib.a: $(OBJ_FILES)
+$(STATIC_DIR)/liball.a: $(OBJ_FILES)
 	$(AR) $(ARFLAGS) $@ $^
 
 # 7. Build Shared Library
 .PHONY: shared
-shared: $(SHARED_DIR)/mylib.so
+shared: $(SHARED_DIR)/liball.so
 
 CXXFLAGS += -fPIC
-$(SHARED_DIR)/mylib.so: $(OBJ_FILES)
+$(SHARED_DIR)/liball.so: $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
 
 # 8. Compile Object Files
