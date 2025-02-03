@@ -1,13 +1,13 @@
-#ifndef MATHLIB
-#define MATHLIB
+#ifndef LIBMATH_H
+#define LIBMATH_H
 
 using namespace std;
 
-class MathLib
+class LibMath
 {
 public:
     int add(int a, int b);
     int multiply(int a, int b);
 };
 
-#endif /* MATHLIB */
+#endif /* LIBMATH_H */

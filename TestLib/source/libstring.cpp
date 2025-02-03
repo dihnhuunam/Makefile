@@ -1,14 +1,14 @@
-#include "stringlib.h"
+#include "libstring.h"
 #include <algorithm>
 
-string StringLib::reverseString(const string &str)
+string LibString::reverseString(const string &str)
 {
     string temp = str;
     reverse(temp.begin(), temp.end());
     return temp;
 }
 
-string StringLib::toUpperCase(const string &str)
+string LibString::toUpperCase(const string &str)
 {
     string temp = str;
     for (char &ch : temp)
