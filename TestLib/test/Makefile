@@ -14,22 +14,22 @@ SHARED_DIR := $(LIB_DIR)/build/shared
 SHARED_FILES := $(wildcard $(SHARED_DIR)/*.so)
 
 # 3. Base directories and files
-PRO_DIR := .
+TEST_DIR := .
 
 # Include directories and files
-INCLUDE_DIRS := $(PRO_DIR)/include $(LIB_DIR)/include
+INCLUDE_DIRS := $(TEST_DIR)/include $(LIB_DIR)/include
 INCLUDE_FILES := $(foreach INCLUDE_DIR, $(INCLUDE_DIRS), $(wildcard $(INCLUDE_DIR)/*.h))
 
 # Source directories and files
-SOURCE_DIRS := $(PRO_DIR)/source
-SOURCE_FILES := $(foreach SOURCE_DIR, $(SOURCE_DIRS), $(wildcard $(SOURCE_DIR)/*.cpp))
+SOURCE_DIR := $(TEST_DIR)/source
+SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.cpp) 
 
 # Use vpath to specify locations of source and header files
 vpath %.h $(INCLUDE_DIRS)
-vpath %.cpp $(SOURCE_DIRS)
+vpath %.cpp $(SOURCE_DIR)
 
 # Build directories for object and binary files
-BUILD_DIR := $(PRO_DIR)/build
+BUILD_DIR := $(TEST_DIR)/build
 
 # Object directory and files
 OBJ_DIR := $(BUILD_DIR)/obj
@@ -55,8 +55,8 @@ $(TARGET): $(OBJ_FILES) $(STATIC_FILES)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Compile source files into object files
-$(OBJ_DIR)/%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # 6. Additional Commands
 # Run the program after building
@@ -67,9 +67,15 @@ run: build
 # Display useful information about the build
 .PHONY: log
 log:
+	@echo "------INFO------"
+	@echo "Include directories: $(INCLUDE_DIRS)"
 	@echo "Include files: $(INCLUDE_FILES)" 
+	@echo "Source directory: $(SOURCE_DIR)"
 	@echo "Source files: $(SOURCE_FILES)"
+	@echo "Object directory: $(OBJ_DIR)"
 	@echo "Object files: $(OBJ_FILES)"
+	@echo "Static libraries: $(STATIC_FILES)"
+	@echo "Shared libraries: $(SHARED_FILES)"
 	@echo "CXX: $(CXX)"
 	@echo "CXXFLAGS: $(CXXFLAGS)"
 

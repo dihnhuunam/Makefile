@@ -71,11 +71,16 @@ $(OBJ_DIR)/%.o: %.cpp
 .PHONY: log
 log:
 	@echo "------INFO------"
-	@echo "Include files: $(INCLUDE_FILES)"
+	@echo "Include directory: $(INCLUDE_DIR)"
+	@echo "Include files: $(INCLUDE_FILES)" 
+	@echo "Source directory: $(SOURCE_DIR)"
 	@echo "Source files: $(SOURCE_FILES)"
+	@echo "Object directory: $(OBJ_DIR)"
 	@echo "Object files: $(OBJ_FILES)"
-	@echo "Static library: $(STATIC_LIBS)"
-	@echo "Shared library: $(SHARED_LIBS)"
+	@echo "Static libraries: $(STATIC_LIBS)"
+	@echo "Shared libraries: $(SHARED_LIBS)"
+	@echo "CXX: $(CXX)"
+	@echo "CXXFLAGS: $(CXXFLAGS)"
 
 # 10. Create Build Directories
 # Ensure necessary build directories exist
