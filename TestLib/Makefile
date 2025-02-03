@@ -25,15 +25,15 @@ BUILD_DIR := $(PRO_DIR)/build
 
 # Object directory and files
 OBJ_DIR := $(BUILD_DIR)/obj
-OBJ_FILES := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(notdir $(SOURCE_FILES)))
+OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
 # Directories for static and shared libraries
 STATIC_DIR := $(BUILD_DIR)/static
 SHARED_DIR := $(BUILD_DIR)/shared
 
 # Library files
-STATIC_LIBS := $(patsubst %.cpp, $(STATIC_DIR)/%.a, $(notdir $(SOURCE_FILES)))
-SHARED_LIBS := $(patsubst %.cpp, $(SHARED_DIR)/%.so, $(notdir $(SOURCE_FILES)))
+STATIC_LIBS := $(patsubst $(SOURCE_DIR)/%.cpp, $(STATIC_DIR)/%.a, $(SOURCE_FILES))
+SHARED_LIBS := $(patsubst $(SOURCE_DIR)/%.cpp, $(SHARED_DIR)/%.so, $(SOURCE_FILES))
 	
 # 3. Compilation Flags
 # Add include directories to CXXFLAGS

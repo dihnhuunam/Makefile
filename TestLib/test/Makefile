@@ -33,7 +33,7 @@ BUILD_DIR := $(TEST_DIR)/build
 
 # Object directory and files
 OBJ_DIR := $(BUILD_DIR)/obj
-OBJ_FILES := $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(notdir $(SOURCE_FILES)))
+OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
 # Binary directory and execatable file
 BIN_DIR := $(BUILD_DIR)/run
