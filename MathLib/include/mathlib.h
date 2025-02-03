@@ -1,13 +1,13 @@
-#ifndef MATH_ULTIS_H
-#define MATH_ULTIS_H
+#ifndef MATHLIB
+#define MATHLIB
 
 using namespace std;
 
-class MathUltis
+class MathLib
 {
 public:
     int add(int a, int b);
     int multiply(int a, int b);
 };
 
-#endif /* MATH_ULTIS_H */
+#endif /* MATHLIB */

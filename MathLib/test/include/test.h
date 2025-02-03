@@ -2,7 +2,6 @@
 #define TEST_H
 
 #include <iostream>
-#include <cassert>
 
 using namespace std;
 
