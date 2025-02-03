@@ -1,5 +1,7 @@
 CXX := g++
 CXXFLAGS := -Wall -Wextra -fPIC
+AR := ar
+ARFLAGS := rcs 
 
 PRO_DIR := .
 
@@ -17,7 +19,9 @@ OBJ_DIR := $(BUILD_DIR)/obj
 OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
 SHARED_DIR := $(BUILD_DIR)/shared
+STATIC_DIR := $(BUILD_DIR)/static
 SHARED_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(SHARED_DIR)/lib%.so, $(SOURCE_FILES))
+STATIC_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(STATIC_DIR)/lib%.a, $(SOURCE_FILES))
 
 CXXFLAGS += -I$(INCLUDE_DIR)
 
@@ -25,11 +29,16 @@ all: shared
 .PHONY: shared clean log
 
 shared: $(SHARED_FILES)
-$(SHARED_FILES): $(OBJ_FILES)
+$(SHARED_DIR)/lib%.so: $(OBJ_DIR)/%.o
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
+
+static: $(STATIC_FILES)
+$(STATIC_DIR)/lib%.a: $(OBJ_DIR)/%.o
+	$(AR) $(ARFLAGS) $@ $^ 
 
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+.SECONDARY: $(OBJ_FILES)
 
 log:
 	@echo "------INFO------"
@@ -40,6 +49,7 @@ log:
 	@echo "Object directory: $(OBJ_DIR)"
 	@echo "Object files: $(OBJ_FILES)"
 	@echo "Shared libraries: $(SHARED_FILES)"
+	@echo "Static libraries: $(STATIC_FILES)"
 	@echo "Executable: $(BUILD_DIR)/main"
 	@echo "CXX: $(CXX)"
 	@echo "CXXFLAGS: $(CXXFLAGS)"
@@ -47,4 +57,4 @@ log:
 clean:
 	rm -rf $(BUILD_DIR)
 
-$(shell mkdir -p $(OBJ_DIR) $(SHARED_DIR))
+$(shell mkdir -p $(OBJ_DIR) $(SHARED_DIR) $(STATIC_DIR))
