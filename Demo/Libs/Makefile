@@ -17,15 +17,15 @@ OBJ_DIR := $(BUILD_DIR)/obj
 OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
 SHARED_DIR := $(BUILD_DIR)/shared
-SHARED_LIBS := $(patsubst $(SOURCE_DIR)/%.cpp, $(SHARED_DIR)/lib%.so, $(SOURCE_FILES))
+SHARED_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(SHARED_DIR)/lib%.so, $(SOURCE_FILES))
 
 CXXFLAGS += -I$(INCLUDE_DIR)
 
 all: shared
 .PHONY: shared clean log
 
-shared: $(SHARED_LIBS)
-$(SHARED_LIBS): $(OBJ_FILES)
+shared: $(SHARED_FILES)
+$(SHARED_FILES): $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
 
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
@@ -39,7 +39,7 @@ log:
 	@echo "Source files: $(SOURCE_FILES)"
 	@echo "Object directory: $(OBJ_DIR)"
 	@echo "Object files: $(OBJ_FILES)"
-	@echo "Shared libraries: $(SHARED_LIBS)"
+	@echo "Shared libraries: $(SHARED_FILES)"
 	@echo "Executable: $(BUILD_DIR)/main"
 	@echo "CXX: $(CXX)"
 	@echo "CXXFLAGS: $(CXXFLAGS)"
