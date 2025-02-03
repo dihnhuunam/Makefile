@@ -1,19 +1,12 @@
 CXX := g++
-CXXFLAGS := -Wall -Wextra -fPIC
+CXXFLAGS := -Wall -Wextra -fPIC -I./includes
 AR := ar
 ARFLAGS := rcs 
 
 PRO_DIR := .
 
-INCLUDE_DIR := $(PRO_DIR)/includes
-
-CXXFLAGS += -I$(INCLUDE_DIR)
-
 SOURCE_DIR := $(PRO_DIR)/sources
 SOURCE_FILES := $(wildcard $(SOURCE_DIR)/*.cpp)
-
-vpath %.h $(INCLUDE_DIR)
-vpath %.cpp $(SOURCE_DIR)
 
 BUILD_DIR := $(PRO_DIR)/build
 OBJ_DIR := $(BUILD_DIR)/obj
