@@ -64,7 +64,7 @@ $(SHARED_LIBS): $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
 
 # 8. Compile Object Files
-$(OBJ_DIR)/%.o: %.cpp
+$(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # 9. Display Build Information

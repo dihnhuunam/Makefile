@@ -1,13 +1,13 @@
 #include "test.h"
-#include "mathlib.h"
-#include "stringlib.h"
+#include "libmath.h"
+#include "libstring.h"
 #include <iostream>
 
 using namespace std;
 
 void test_add()
 {
-    MathLib math;
+    LibMath math;
 
     cout << "\n=== Testing Addition ===\n";
 
@@ -38,7 +38,7 @@ void test_add()
 
 void test_multiply()
 {
-    MathLib math;
+    LibMath math;
 
     cout << "\n=== Testing Multiplication ===\n";
 
@@ -69,7 +69,7 @@ void test_multiply()
 
 void test_stringlib()
 {
-    StringLib stringLib;
+    LibString stringLib;
 
     std::cout << "\n=== Testing String Library ===\n";
 
