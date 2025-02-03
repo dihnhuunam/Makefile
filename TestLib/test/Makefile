@@ -51,7 +51,7 @@ all: build
 .PHONY: build
 build: $(TARGET)
 
-$(TARGET): $(OBJ_FILES) $(STATIC_FILES) 
+$(TARGET): $(OBJ_FILES) $(SHARED_FILES) 
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Compile source files into object files
