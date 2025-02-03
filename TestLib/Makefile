@@ -1,6 +1,6 @@
 # 1. Compiler and Flags
 CXX := g++
-CXXFLAGS := -Wall -Wextra -fPIC
+CXXFLAGS := -Wall -Wextra
 AR := ar
 ARFLAGS := rcs
 
@@ -37,7 +37,7 @@ SHARED_LIBS := $(patsubst %.cpp, $(SHARED_DIR)/%.so, $(notdir $(SOURCE_FILES)))
 	
 # 3. Compilation Flags
 # Add include directories to CXXFLAGS
-CXXFLAGS += $(foreach INCLUDE_DIR, $(INCLUDE_DIR), -I$(INCLUDE_DIR))
+CXXFLAGS += -I$(INCLUDE_DIR)
 
 # 4. Default Target
 .PHONY: all
@@ -59,6 +59,7 @@ $(STATIC_LIBS): $(OBJ_FILES)
 .PHONY: shared
 shared: $(SHARED_LIBS)
 
+CXXFLAGS += -fPIC
 $(SHARED_LIBS): $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@
 
