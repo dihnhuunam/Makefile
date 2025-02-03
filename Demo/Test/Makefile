@@ -19,7 +19,9 @@ OBJ_FILES := $(patsubst $(SOURCE_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 LIB_DIR := ../Libs
 SHARED_DIR := $(LIB_DIR)/build/shared
 SHARED_LIBS := $(wildcard $(SHARED_DIR)/*.so)
-LDFLAGS := -Wl,-rpath=$(SHARED_DIR)
+LIB_CALCULATE := calculate
+LIB_DISPLAY := display
+LDFLAGS := -Wl,-rpath=$(SHARED_DIR) -l$(LIB_CALCULATE) -l$(LIB_DISPLAY)
 	
 .PHONY: build link clean log
 
@@ -30,9 +32,11 @@ $(OBJ_DIR)/main.o: $(SOURCE_DIR)/main.cpp | $(OBJ_DIR)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-link: $(OBJ_DIR)/main.o 
+link: $(OBJ_DIR)/main.o | $(BUILD_DIR)
+	$(CXX) $^ -L$(SHARED_DIR) $(LDFLAGS) -o $(BUILD_DIR)/main
+
+$(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $^ -L$(SHARED_DIR) $(LDFLAGS) $(addprefix -l:,$(notdir $(SHARED_LIBS))) -o $(BUILD_DIR)/main
 
 log:
 	@echo "------INFO------"
@@ -46,6 +50,7 @@ log:
 	@echo "Executable: $(BUILD_DIR)/main"
 	@echo "CXX: $(CXX)"
 	@echo "CXXFLAGS: $(CXXFLAGS)"
+	@echo "LDDFLAGS: $(LDFLAGS)"
 
 clean:
 	rm -rf $(BUILD_DIR)
