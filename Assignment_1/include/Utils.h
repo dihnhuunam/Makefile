@@ -25,7 +25,6 @@ private:
 
 public:
     static void initMapActions();
-    static bool checkValidChoice(const char *choice);
     static int getValidInt(const std::string &prompt);
     static void clearScreen();
     static void waitForEnter();

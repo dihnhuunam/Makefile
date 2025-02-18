@@ -21,11 +21,6 @@ void Utils::initMapActions()
     }
 }
 
-bool Utils::checkValidChoice(const char *choice)
-{
-    return std::find(Utils::choices.begin(), Utils::choices.end(), *choice) != Utils::choices.end();
-}
-
 int Utils::getValidInt(const std::string &prompt)
 {
     int value;
