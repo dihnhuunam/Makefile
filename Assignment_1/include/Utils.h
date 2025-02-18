@@ -12,7 +12,6 @@ class Utils
 {
 private:
     static std::map<char, MenuFunction> mapActions;
-    static std::vector<char> choices;
 
 private:
     static void handleCreate(ArrayManager &arr);

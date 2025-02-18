@@ -2,7 +2,6 @@
 #include <limits>
 
 std::map<char, MenuFunction> Utils::mapActions;
-std::vector<char> Utils::choices;
 
 void Utils::initMapActions()
 {
@@ -14,11 +13,6 @@ void Utils::initMapActions()
         {'s', handleSortAscending},
         {'x', handleSortDescending},
         {'t', handleSearch}};
-
-    for (const auto &pair : Utils::mapActions)
-    {
-        Utils::choices.push_back(pair.first);
-    }
 }
 
 int Utils::getValidInt(const std::string &prompt)
