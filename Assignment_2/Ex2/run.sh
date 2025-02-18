@@ -1,2 +1,2 @@
-gcc ex2.c -o ex2
-./ex2
+g++ ./main.cpp -o main
+./main
